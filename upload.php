@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 if (isset($_FILES['image'])) {
     // execution upload image
     // ambil dari data session
-    $user_id = 1;
+    $user_id = $_SESSION['login_user_id'];
 
     // check insert or update
     $sql = "SELECT * FROM tbl_profilepict WHERE user_id = $user_id";
