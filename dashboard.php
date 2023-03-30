@@ -51,6 +51,7 @@ if ($num > 0) {
 
 <body>
     <h1>Dashboard</h1>
+    <h2>Profile Pict</h2>
     <?php
     if (!empty($file_name)) {
     ?>
@@ -63,6 +64,26 @@ if ($num > 0) {
         <input type="file" name="image">
         <input type="submit" value="Upload Image">
     </form>
+    <br /><br />
+    <?php
+    $display_total_inbox = "";
+
+    // query messages
+    $sql = "SELECT * FROM tbl_messages WHERE destination_user_id = '$user_id' AND view = '0'";
+    $result = mysqli_query($conn, $sql);
+
+    $num = mysqli_num_rows($result);
+    $total_inbox = $num;
+
+    if (!empty($total_inbox)) {
+        $display_total_inbox = "(" . $total_inbox . ")";
+    }
+    ?>
+    <h2>Messages</h2>
+    <ul>
+        <li><a href="inbox.php">INBOX <?php echo $display_total_inbox; ?></a></li>
+        <li><a href="sent_message.php">SENT MESSAGES</a></li>
+    </ul>
 </body>
 
 </html>
