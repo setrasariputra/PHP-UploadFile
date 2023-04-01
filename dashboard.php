@@ -38,6 +38,9 @@ if ($num > 0) {
     }
 }
 
+
+include('create_order.php');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +67,7 @@ if ($num > 0) {
         <input type="file" name="image">
         <input type="submit" value="Upload Image">
     </form>
-    <br /><br />
+    <hr />
     <?php
     $display_total_inbox = "";
 
@@ -84,6 +87,82 @@ if ($num > 0) {
         <li><a href="inbox.php">INBOX <?php echo $display_total_inbox; ?></a></li>
         <li><a href="sent_message.php">SENT MESSAGES</a></li>
     </ul>
+
+    <hr />
+
+
+    <h2>Order Produk</h2>
+    <?php
+    $sql = "SELECT * FROM tbl_product";
+    $result = mysqli_query($conn, $sql);
+    $num = mysqli_num_rows($result);
+
+    if ($num > 0) {
+        ?><ul><?php
+            while ($row = mysqli_fetch_assoc($result)) {
+                ?><li><a href="dashboard.php?product_id=<?php echo $row['id'];?>"><?php echo $row['product_name'];?></a></li><?php
+            }
+        ?></ul>
+        <?php
+
+        // check product_id
+        if(isset($_GET['product_id'])) {
+            $product_id = $_GET['product_id'];
+            if(!empty($product_id)) {
+                ?>
+                <form method="POST" action="">
+                    <input type="hidden" name="product" value="<?php echo $product_id;?>" />
+                <?php
+                // show server
+                $sql = "SELECT * FROM tbl_server WHERE product_id = '$product_id'";
+                $result = mysqli_query($conn, $sql);
+                $num = mysqli_num_rows($result);
+                if($num > 0) {
+                    ?>
+                    <div>
+                    <label>Pilih Server</label>
+                    <select name="server"><?php
+                    while($row = mysqli_fetch_assoc($result)) {
+                        ?>
+                        <option value="<?php echo $row['server_name'];?>"><?php echo $row['server_name'];?></option>
+                        <?php
+                    }
+                    ?>
+                    </select>
+                    </div>
+                    <?php
+                }
+
+                // show group
+                $sql = "SELECT * FROM tbl_grup WHERE product_id = '$product_id'";
+                $result = mysqli_query($conn, $sql);
+                $num = mysqli_num_rows($result);
+                if($num > 0) {
+                    ?>
+                    <div>
+                    <label>Pilih Grup</label>
+                    <select name="grup"><?php
+                    while($row = mysqli_fetch_assoc($result)) {
+                        ?>
+                        <option value="<?php echo $row['grup_name'];?>"><?php echo $row['grup_name'];?></option>
+                        <?php
+                    }
+                    ?>
+                    </select>
+                    </div>
+                    <?php
+                }
+                ?>
+                <div><input type="submit" name="order" value="Request Order"></div>
+                </form>
+                <?php
+            }
+        }
+
+    }
+    ?>
+
+
 </body>
 
 </html>
