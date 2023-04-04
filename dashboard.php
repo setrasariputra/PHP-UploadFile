@@ -98,71 +98,120 @@ include('create_order.php');
     $num = mysqli_num_rows($result);
 
     if ($num > 0) {
-        ?><ul><?php
-            while ($row = mysqli_fetch_assoc($result)) {
-                ?><li><a href="dashboard.php?product_id=<?php echo $row['id'];?>"><?php echo $row['product_name'];?></a></li><?php
+    ?><ul><?php
+                while ($row = mysqli_fetch_assoc($result)) {
+                ?><li><a href="dashboard.php?product_id=<?php echo $row['id']; ?>"><?php echo $row['product_name']; ?></a></li><?php
+                        }
+                         ?></ul>
+        <br /><br />
+        <?php
+        $product_id = '';
+        if (isset($_GET['product_id'])) {
+            $product_id = $_GET['product_id'];
+        }
+        ?>
+        <select id="select-product">
+            <option value="">..Pilih Product..</option>
+            <?php
+            $sql2 = "SELECT * FROM tbl_product";
+            $result2 = mysqli_query($conn, $sql2);
+            while ($row2 = mysqli_fetch_assoc($result2)) {
+                $selected = '';
+                if($row2['id'] == $product_id) {
+                    $selected = 'selected';
+                }
+                ?>
+                <option value="<?php echo $row2['id']; ?>" <?php echo $selected;?>><?php echo $row2['product_name']; ?></option>
+                <?php
             }
-        ?></ul>
+            ?>
+        </select>
         <?php
 
         // check product_id
-        if(isset($_GET['product_id'])) {
+        if (isset($_GET['product_id'])) {
             $product_id = $_GET['product_id'];
-            if(!empty($product_id)) {
-                ?>
+            if (!empty($product_id)) {
+        ?>
                 <form method="POST" action="">
-                    <input type="hidden" name="product" value="<?php echo $product_id;?>" />
-                <?php
-                // show server
-                $sql = "SELECT * FROM tbl_server WHERE product_id = '$product_id'";
-                $result = mysqli_query($conn, $sql);
-                $num = mysqli_num_rows($result);
-                if($num > 0) {
-                    ?>
-                    <div>
-                    <label>Pilih Server</label>
-                    <select name="server"><?php
-                    while($row = mysqli_fetch_assoc($result)) {
-                        ?>
-                        <option value="<?php echo $row['server_name'];?>"><?php echo $row['server_name'];?></option>
-                        <?php
-                    }
-                    ?>
-                    </select>
-                    </div>
+                    <input type="hidden" name="product" value="<?php echo $product_id; ?>" />
                     <?php
-                }
+                    // show server
+                    $sql = "SELECT * FROM tbl_server WHERE product_id = '$product_id'";
+                    $result = mysqli_query($conn, $sql);
+                    $num = mysqli_num_rows($result);
+                    if ($num > 0) {
+                    ?>
+                        <div>
+                            <label>Pilih Server</label>
+                            <select name="server"><?php
+                                                    while ($row = mysqli_fetch_assoc($result)) {
+                                                    ?>
+                                    <option value="<?php echo $row['server_name']; ?>"><?php echo $row['server_name']; ?></option>
+                                <?php
+                                                    }
+                                ?>
+                            </select>
+                        </div>
+                    <?php
+                    }
 
-                // show group
-                $sql = "SELECT * FROM tbl_grup WHERE product_id = '$product_id'";
-                $result = mysqli_query($conn, $sql);
-                $num = mysqli_num_rows($result);
-                if($num > 0) {
+                    // show group
+                    $sql = "SELECT * FROM tbl_grup WHERE product_id = '$product_id'";
+                    $result = mysqli_query($conn, $sql);
+                    $num = mysqli_num_rows($result);
+                    if ($num > 0) {
                     ?>
-                    <div>
-                    <label>Pilih Grup</label>
-                    <select name="grup"><?php
-                    while($row = mysqli_fetch_assoc($result)) {
-                        ?>
-                        <option value="<?php echo $row['grup_name'];?>"><?php echo $row['grup_name'];?></option>
-                        <?php
+                        <div>
+                            <label>Pilih Grup</label>
+                            <select name="grup"><?php
+                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                ?>
+                                    <option value="<?php echo $row['grup_name']; ?>"><?php echo $row['grup_name']; ?></option>
+                                <?php
+                                                }
+                                ?>
+                            </select>
+                        </div>
+                    <?php
                     }
                     ?>
-                    </select>
-                    </div>
-                    <?php
-                }
-                ?>
-                <div><input type="submit" name="order" value="Request Order"></div>
+                    <div><input type="submit" name="order" value="Request Order"></div>
                 </form>
-                <?php
+    <?php
             }
+        }else{
+            ?>
+            <div>
+                <label>Pilih Server</label>
+                <select disabled>
+                    <option>...............</option>
+                </select>
+            </div>
+            <div>
+                <label>Pilih Grup</label>
+                <select disabled>
+                    <option>...............</option>
+                </select>
+            </div>
+            <?php
         }
-
     }
     ?>
 
 
+<script>
+    const selectProduct = document.querySelector("#select-product");
+    selectProduct.addEventListener("change", function() {
+        const selectValue = selectProduct.value;
+        let redirectURL = "dashboard.php";
+        if(selectValue != '') {
+            redirectURL = "dashboard.php?product_id="+selectValue;
+        }
+
+        window.location.href = redirectURL;
+    });
+</script>
 </body>
 
 </html>
