@@ -110,6 +110,8 @@ include('create_order.php');
             $product_id = $_GET['product_id'];
         }
         ?>
+        <div>
+        <label>Pilih Produk</label>
         <select id="select-product">
             <option value="">..Pilih Product..</option>
             <?php
@@ -126,6 +128,7 @@ include('create_order.php');
             }
             ?>
         </select>
+        </div>
         <?php
 
         // check product_id
@@ -133,8 +136,9 @@ include('create_order.php');
             $product_id = $_GET['product_id'];
             if (!empty($product_id)) {
         ?>
-                <form method="POST" action="">
-                    <input type="hidden" name="product" value="<?php echo $product_id; ?>" />
+                <form method="POST" action="order.php">
+                    <input type="hidden" name="product_id" value="<?php echo $product_id; ?>" />
+                    <table border="0" width="100%">
                     <?php
                     // show server
                     $sql = "SELECT * FROM tbl_server WHERE product_id = '$product_id'";
@@ -142,17 +146,20 @@ include('create_order.php');
                     $num = mysqli_num_rows($result);
                     if ($num > 0) {
                     ?>
-                        <div>
-                            <label>Pilih Server</label>
-                            <select name="server"><?php
+                        <tr>
+                            <td width="100px">Pilih Server</td>
+                            <td width="5px">:</td>
+                            <td>
+                            <select name="server_id"><?php
                                                     while ($row = mysqli_fetch_assoc($result)) {
                                                     ?>
-                                    <option value="<?php echo $row['server_name']; ?>"><?php echo $row['server_name']; ?></option>
+                                    <option value="<?php echo $row['id']; ?>"><?php echo $row['server_name']; ?></option>
                                 <?php
                                                     }
                                 ?>
                             </select>
-                        </div>
+                        </td>
+                        </tr>
                     <?php
                     }
 
@@ -162,21 +169,35 @@ include('create_order.php');
                     $num = mysqli_num_rows($result);
                     if ($num > 0) {
                     ?>
-                        <div>
-                            <label>Pilih Grup</label>
-                            <select name="grup"><?php
+                        <tr>
+                            <td>Pilih Grup</td>
+                            <td>:</td>
+                            <td>
+                            <select name="grup_id"><?php
                                                 while ($row = mysqli_fetch_assoc($result)) {
                                                 ?>
-                                    <option value="<?php echo $row['grup_name']; ?>"><?php echo $row['grup_name']; ?></option>
+                                    <option value="<?php echo $row['id']; ?>"><?php echo $row['grup_name']; ?></option>
                                 <?php
                                                 }
                                 ?>
                             </select>
-                        </div>
+                                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jumlah Pesanan</td>
+                            <td>:</td>
+                            <td>
+                            <input type="number" name="qty" min="1" style="width:50px;" /> k
+                            </td>
+                        </tr>
                     <?php
                     }
                     ?>
-                    <div><input type="submit" name="order" value="Request Order"></div>
+                    <tr>
+                        <td colspan="3">
+                            <input type="submit" name="order" value="Request Order"></td>
+                    </tr>
+                    </table>
                 </form>
     <?php
             }
